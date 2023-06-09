@@ -85,7 +85,68 @@ public class ProductsRest {
 
 
 
-
+	public void Select(String command) {
+		String [] operation = new String [3]; 
+		String tableName= " "; int counter=0; int pos=0; 
+		String tableName1= " ";
+		String columnName = " ";
+		String var=""; String result= "";
+		String varCondition1="";  String result1="";
+		String varCondition2="";  String result2="";
+		String varCondition3="";  String result3=""; int amountCondition=0; 
+		System.out.println(varCondition1);
+		System.out.println(command.length());
+		for(int i=0; i<command.length() ; i++ ) {
+			if(command.charAt(i)==' ' || i==command.length()-1 ) {
+				if(i==command.length()-1 ) i++; 
+				if(counter==0) { //nombre de la columna
+					columnName=command.substring(0,i);
+					pos=i+1;
+					counter++;
+				}
+				else if(counter==1) {
+					if(command.substring(pos, i).contentEquals("from")) {
+						counter++; 
+						pos=i+1; 
+					}
+					else
+						break;
+				}
+				else if(counter==2) { //nombre de la tabla
+					tableName=command.substring(pos, i);
+					pos=i+1;
+					counter++;
+				}
+				else if(counter==3) {
+					if(command.substring(pos, i).contentEquals("innerjoin")) {
+						counter++; 
+						pos=i+1; 
+					}
+					else
+						break;
+				}
+				else if(counter==4) { //nombre de la tabla que hace interseccion
+					tableName1=command.substring(pos, i);
+					pos=i+1;
+					counter++;
+				}
+				else if(counter==3) {
+					if(command.substring(pos, i).contentEquals("on")) {
+						counter++; 
+						pos=i+1; 
+					}
+					else
+						break;
+				}
+			}
+			else if (command.charAt(i)=='=') {
+				if(counter==4) {
+					var=command.substring(pos, i); 
+					pos=i+1;
+					counter++;
+				}
+			}
+		}
 
 	public void Update(String command) {
 		String [] operation = new String [3]; 
