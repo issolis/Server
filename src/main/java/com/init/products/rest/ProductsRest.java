@@ -42,49 +42,6 @@ import javax.xml.xpath.XPathFactory;
 public class ProductsRest {
 	String [] nameC = null ;
 
-	@GetMapping
-	public ResponseEntity<Product[]> getProduct() {
-		Product[] productList = new Product[7];
-
-		Product product1 = new Product();
-		product1.setName("Isaac");
-		product1.setId(1L);
-
-		Product product2 = new Product();
-		product2.setName("John");
-		product2.setId(2L);
-
-		Product product3 = new Product();
-		product3.setName("John");
-		product3.setId(2L);
-
-		Product product4 = new Product();
-		product4.setName("John");
-		product4.setId(2L);
-
-		Product product5 = new Product();
-		product5.setName("John");
-		product5.setId(2L);
-
-		Product product6 = new Product();
-		product6.setName("John");
-		product6.setId(2L);
-
-		Product product7 = new Product();
-		product7.setName("John");
-		product7.setId(2L);
-
-		productList[0] = product1;
-		productList[1] = product2;
-		productList[2] = product3;
-		productList[3] = product4;
-		productList[4] = product5;
-		productList[5] = product6;
-		productList[6] = product7;
-
-
-		return ResponseEntity.ok(productList);
-	}
 	@PostMapping("/endpoint")
 	public ResponseEntity<response[]> procesarDato(@RequestBody String dato) {
 		String valor = dato;
@@ -93,7 +50,6 @@ public class ProductsRest {
 		response res []= new response[1];   
 		return ResponseEntity.ok(res);
 	}
-
 
 	public void processingInformation(String message) {
 		String command = " "; int pos=0; 
@@ -113,6 +69,8 @@ public class ProductsRest {
 		}
 	}
 
+	
+	 
 	public void Update(String command) {
 		String [] operation = new String [3]; 
 		String tableName= " "; int counter=0; int pos=0; 
@@ -232,7 +190,8 @@ public class ProductsRest {
 				while(nameC[amountVar]!=null)
 					amountVar++;
 
-				File xmlFile = new File(getClass().getResource("student.xml").getFile());
+				File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
+				System.out.print((getClass().getResource("studentss.xml").getFile()));
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				Document document = builder.parse(xmlFile);
@@ -257,9 +216,9 @@ public class ProductsRest {
 						}
 						if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
 							for(int p=0; p<amountVar;p++) {
-								if(results1[p].contentEquals(result)) {
+								if(nameC[p].contentEquals(var)) {
 									System.out.print(results11[p].getTextContent()); 
-									results11[p].setTextContent(result);
+									studentElement.getElementsByTagName(nameC[p]).item(0).setTextContent(result);
 								}
 							}
 						}
@@ -268,11 +227,11 @@ public class ProductsRest {
 
 				// Guardar los cambios en el archivo XML
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				Result outPut = new StreamResult(xmlFile);
-				Source input = new DOMSource(document);
-				transformer.transform(input, outPut);
-
+	            Transformer transformer = transformerFactory.newTransformer();
+	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	            DOMSource source = new DOMSource(document);
+	            StreamResult ren = new StreamResult(xmlFile);
+	            transformer.transform(source, ren);
 				System.out.println("Archivo XML modificado y guardado: " + filePath);
 
 
@@ -285,13 +244,13 @@ public class ProductsRest {
 
 	}
 	public boolean deniedAcces(int amountConditions, String [] results, String [] results1 , String [] operation, String [] Condition, int amountVar) {
-		System.out.println("ll");
+		System.out.println(results1[0]);
 		String[] auxResult = new String [3]; int x=0;
 		String[] auxResult1 = new String [3];
 		for(int i=0; i<Condition.length; i++ ) {
 			for(int j=0; j<amountVar; j++) {
 				if(nameC[j].contentEquals(Condition[i])) {
-					auxResult[x]=results[i]; x++; 
+					auxResult[x]=results[i]; 
 					auxResult1[x]=results1[j]; x++; 
 				}
 			}
@@ -299,7 +258,7 @@ public class ProductsRest {
 
 
 		if(amountConditions==1) {
-			if(results[0]==results[0])
+			if(auxResult1[0].contentEquals(auxResult[0]))
 				return true;
 		}
 		else if(amountConditions==2) {
@@ -343,7 +302,7 @@ public class ProductsRest {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 
-			File file = new File(getClass().getResource("students.xml").getFile());
+			File file = new File(getClass().getResource("studentss.xml").getFile());
 			Document document = builder.parse(file);
 			Node estudianteNode = document.getDocumentElement();
 			Element estudianteElement = (Element) estudianteNode;
@@ -387,4 +346,3 @@ public class ProductsRest {
 		return flag; 
 	}
 }
-
