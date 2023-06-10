@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <estudiantes>
-                              
+                                                                                          
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -8,23 +23,68 @@
     
     
     <estudiante>
-                                                            
+                                                                                                                                                                                    
         
         
         
         
         
         
-        <nombre>1</nombre>
-                                                            
         
         
         
         
         
         
-        <apellido>Doe</apellido>
-                                                            
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <nombre>Isaac</nombre>
+                                                                                                                                                                                    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <apellido>Isaac</apellido>
+                                                                                                                                                                                    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -32,7 +92,22 @@
         
         
         <carnet>12345</carnet>
-                                                          
+                                                                                                                                                                                  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -40,7 +115,22 @@
     
     
     </estudiante>
-                              
+                                                                                          
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -48,23 +138,68 @@
     
     
     <estudiante>
-                                                            
+                                                                                                                                                                                    
         
         
         
         
         
         
-        <nombre>1</nombre>
-                                                            
         
         
         
         
         
         
-        <apellido>Smith</apellido>
-                                                            
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <nombre>Isaac</nombre>
+                                                                                                                                                                                    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <apellido>Isaac</apellido>
+                                                                                                                                                                                    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -72,7 +207,22 @@
         
         
         <carnet>67890</carnet>
-                                                          
+                                                                                                                                                                                  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -80,7 +230,22 @@
     
     
     </estudiante>
-                            
+                                                                                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

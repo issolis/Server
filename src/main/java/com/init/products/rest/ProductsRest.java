@@ -67,10 +67,26 @@ public class ProductsRest {
 			System.out.print(message.substring(pos+1));
 			Update(message.substring(pos+1)); 
 		}
+		else if(command.contentEquals("Create")) {
+
+		}
+		else if(command.contentEquals("Insert")) {
+			message=message.substring(pos+1);
+			System.out.print(message.substring(0));
+			int i=0; 
+			while(message.charAt(i)!=' ') 
+				i++;
+			String commandAux=message.substring(0,i);
+			if(commandAux.contentEquals("Into")) {
+				Insert(message.substring(i+1)); 
+			}
+		}
 	}
 
-	
-	 
+
+
+
+
 	public void Update(String command) {
 		String [] operation = new String [3]; 
 		String tableName= " "; int counter=0; int pos=0; 
@@ -227,22 +243,21 @@ public class ProductsRest {
 
 				// Guardar los cambios en el archivo XML
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	            Transformer transformer = transformerFactory.newTransformer();
-	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	            DOMSource source = new DOMSource(document);
-	            StreamResult ren = new StreamResult(xmlFile);
-	            transformer.transform(source, ren);
+				Transformer transformer = transformerFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				DOMSource source = new DOMSource(document);
+				StreamResult ren = new StreamResult(xmlFile);
+				transformer.transform(source, ren);
 				System.out.println("Archivo XML modificado y guardado: " + filePath);
-
-
 			}
 		}catch (Exception e) {
 
-		    System.err.println("Error al guardar los cambios en el archivo XML: " + e.getMessage());
+			System.err.println("Error al guardar los cambios en el archivo XML: " + e.getMessage());
 		}
 
 
 	}
+
 	public boolean deniedAcces(int amountConditions, String [] results, String [] results1 , String [] operation, String [] Condition, int amountVar) {
 		System.out.println(results1[0]);
 		String[] auxResult = new String [3]; int x=0;
@@ -345,4 +360,94 @@ public class ProductsRest {
 		}
 		return flag; 
 	}
+
+	public void Insert(String command) {
+		String tableName=" "; 
+		String [][] values = null; 
+		String [] variables = null;
+		int amountVar=1; 
+		int amountIns=0; 
+		int auxamountIns=0; 
+		int counter=1; int pos=0; 
+		for(int i=0; i<command.length(); i++) {
+			if(counter==1 && command.charAt(i)==' ') {
+				tableName=command.substring(pos, i); 
+				pos=i+1; 
+				counter++; 
+			}
+			else if(counter==2 && command.charAt(i)=='(') {
+				counter++; 
+				pos=i+1;
+				int x=i; 
+				while(command.charAt(x)!=')' && x!=command.length()) {
+					if(command.charAt(x)==',')
+						amountVar++; 
+					x++;
+				}
+				variables= new String [amountVar]; 
+			}
+			else if((counter==3 && command.charAt(i)==',')) {
+				int x=i; int j=0;
+				while(command.charAt(x)!=')' && x!=command.length()) {
+					if(command.charAt(x)==',') {
+						variables[j]=command.substring(pos, x); j++;
+						pos=x+1;
+					}
+					x++;
+				}
+				if(x<command.length()) {
+					variables[j]=command.substring(pos, x); 
+					pos=x+2;
+					counter++;
+				}
+				else break;
+				i=x-1;  
+				while( x!=command.length()) {
+					if(command.charAt(x)=='(') 
+						amountIns++; 
+					x++; 
+
+				}
+				values= new String [amountIns][amountVar];
+
+			}
+			else if(counter==4 && command.charAt(i)==' ') {
+				int x=i; x++;
+				while(command.charAt(x)!=' ' && x!=command.length()) {
+					
+					x++; 
+				}
+				pos=x+1;
+				counter++; 
+				i=x; 
+			}
+			else if(counter==5 && command.charAt(i)=='(') {
+				int x=i; int value=0;
+				while(command.charAt(x)!=')' && x!=command.length()) {
+					if(command.charAt(x)==',') {
+						values[auxamountIns][value]=command.substring(pos, x); 
+						pos=x+1;
+						value++; 
+					}
+					x++;
+				}
+				if(x<command.length()) {
+					values[auxamountIns][value]=command.substring(pos, x); 
+					pos=x+2;
+				}
+				i=x-1;
+			}
+
+
+		}
+		try {
+			if(checkConditions(variables)) {
+				System.out.println(true);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
