@@ -40,7 +40,7 @@ import javax.xml.xpath.XPathFactory;
 @CrossOrigin(origins = "http://localhost:4200")
 
 public class ProductsRest {
-	String [] nameC = null ;
+	String [] nameC = null ; int amountGlobalVar=0;
 
 	@PostMapping("/endpoint")
 	public ResponseEntity<response[]> procesarDato(@RequestBody String dato) {
@@ -61,14 +61,15 @@ public class ProductsRest {
 			}
 			i++;
 		}
-
-
 		if(command.contentEquals("Update")) {
 			System.out.print(message.substring(pos+1));
 			Update(message.substring(pos+1)); 
 		}
 		else if(command.contentEquals("Create")) {
 
+		}
+		else if(command.contentEquals("Select")) {
+			Select((message.substring(pos+1))); 
 		}
 		else if(command.contentEquals("Insert")) {
 			message=message.substring(pos+1);
@@ -130,7 +131,7 @@ public class ProductsRest {
 					pos=i+1;
 					counter++;
 				}
-				else if(counter==3) {
+				else if(counter==5) {
 					if(command.substring(pos, i).contentEquals("on")) {
 						counter++; 
 						pos=i+1; 
@@ -140,14 +141,20 @@ public class ProductsRest {
 				}
 			}
 			else if (command.charAt(i)=='=') {
-				if(counter==4) {
+				if(counter==6) {
 					var=command.substring(pos, i); 
+					result=command.substring(i+1);
 					pos=i+1;
 					counter++;
 				}
 			}
 		}
+		System.out.println(var); 
+		System.out.println(result); 
 
+		for(int j=0; j<7; j++); 
+
+	}
 	public void Update(String command) {
 		String [] operation = new String [3]; 
 		String tableName= " "; int counter=0; int pos=0; 
@@ -321,8 +328,8 @@ public class ProductsRest {
 
 	public boolean deniedAcces(int amountConditions, String [] results, String [] results1 , String [] operation, String [] Condition, int amountVar) {
 		System.out.println(results1[0]);
-		String[] auxResult = new String [3]; int x=0;
-		String[] auxResult1 = new String [3];
+		String[] auxResult = new String [nameC.length]; int x=0;
+		String[] auxResult1 = new String [nameC.length];
 		for(int i=0; i<Condition.length; i++ ) {
 			for(int j=0; j<amountVar; j++) {
 				if(nameC[j].contentEquals(Condition[i])) {
@@ -398,6 +405,7 @@ public class ProductsRest {
 							String variableName = variableNode.getNodeName();
 							nameC[amountVar]=variableName; amountVar++;
 							System.out.println(variableName);
+							amountGlobalVar++; 
 						}
 					}
 					break;
@@ -440,10 +448,11 @@ public class ProductsRest {
 				counter++; 
 				pos=i+1;
 				int x=i; 
-				while(command.charAt(x)!=')' && x!=command.length()) {
+				while(command.charAt(x)!=')' ) {
 					if(command.charAt(x)==',')
 						amountVar++; 
 					x++;
+					if(x==command.length()) break;
 				}
 				variables= new String [amountVar]; 
 			}
@@ -475,10 +484,9 @@ public class ProductsRest {
 			else if(counter==4 && command.charAt(i)==' ') {
 				int x=i; x++;
 				while(command.charAt(x)!=' ' && x!=command.length()) {
-					
 					x++; 
 				}
-				pos=x+1;
+				pos=x+2;
 				counter++; 
 				i=x; 
 			}
@@ -503,12 +511,60 @@ public class ProductsRest {
 		}
 		try {
 			if(checkConditions(variables)) {
-				System.out.println(true);
+				String[][] auxResult = new String [amountIns][amountGlobalVar]; int x=0;
+
+				for(int i=0; i<amountGlobalVar; i++ ) {
+					for(int j=0; j<amountVar; j++) {
+						if(nameC[i].contentEquals(variables[j])) {
+							while(x!=amountIns) {
+								auxResult[x][i]=values[x][j];
+								x++;
+							}
+						}
+					}
+				}
+				createNewNode(amountIns, amountGlobalVar, auxResult);
 			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	public void createNewNode(int amountIns, int amountVar, String values[][]) {
+		try {
+		    File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
+		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		    DocumentBuilder builder = factory.newDocumentBuilder();
+		    Document document = builder.parse(xmlFile);
+		    for(int i=0; i<amountIns; i++) {
+		    	 Element estudianteElement = document.createElement("estudiante");
+		    	 for(int j=0; j<amountVar; j++) {
+		    		Element nombreElement = document.createElement(nameC[j]);
+		    		if(values[i][j]!=null)
+		    			nombreElement.setTextContent(values[i][j]);
+		    		else
+		    			nombreElement.setTextContent(" ");
+		  		    estudianteElement.appendChild(nombreElement);
+		    	 }
+		    	 Element rootElement = document.getDocumentElement();
+		    	 rootElement.appendChild(estudianteElement);
+		    }
+
+		    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		    Transformer transformer = transformerFactory.newTransformer();
+		    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		    DOMSource source = new DOMSource(document);
+		    StreamResult result = new StreamResult(xmlFile);
+		    transformer.transform(source, result);
+
+		    System.out.println("Nuevo nodo 'estudiante' agregado al archivo XML.");
+
+		} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
+		    e.printStackTrace();
+		}
+
+	}
 
 }
+
+
