@@ -66,10 +66,18 @@ public class ProductsRest {
 			Update(message.substring(pos+1)); 
 		}
 		else if(command.contentEquals("Create")) {
-
+			int i=pos+1; 
+			while(message.charAt(i)!=' ') 
+				i++;
+			command=message.substring(pos+1,i);
+			pos=i;
+			create(message.substring(pos+1), command);
 		}
 		else if(command.contentEquals("Select")) {
 			Select((message.substring(pos+1))); 
+		}
+		else if(command.contentEquals("Drop")) {
+			deleteTable((message.substring(pos+1))); 
 		}
 		else if(command.contentEquals("Insert")) {
 			message=message.substring(pos+1);
@@ -82,9 +90,19 @@ public class ProductsRest {
 				Insert(message.substring(i+1)); 
 			}
 		}
+		else if(command.contentEquals("Delete")) {
+			message=message.substring(pos+1);
+			System.out.print(message.substring(0));
+			int i=0; 
+			while(message.charAt(i)!=' ') 
+				i++;
+			String commandAux=message.substring(0,i);
+			if(commandAux.contentEquals("From")) {
+				delete(message.substring(i+1)); 
+			}
+		}
+		amountGlobalVar=0; 
 	}
-
-
 
 	public void Select(String command) {
 		String [] operation = new String [3]; 
@@ -155,6 +173,7 @@ public class ProductsRest {
 		for(int j=0; j<7; j++); 
 
 	}
+
 	public void Update(String command) {
 		String [] operation = new String [3]; 
 		String tableName= " "; int counter=0; int pos=0; 
@@ -296,7 +315,6 @@ public class ProductsRest {
 						Element[] results11 = new Element [amountVar];
 						for(int k=0; k<amountVar; k++) {
 							results1[k]= (String) studentElement.getElementsByTagName(nameC[k]).item(0).getTextContent();
-							results11[k]=  (Element) studentElement.getElementsByTagName(nameC[k]).item(0);
 						}
 						if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
 							for(int p=0; p<amountVar;p++) {
@@ -379,6 +397,7 @@ public class ProductsRest {
 		}		
 		return false; 
 	}
+
 	public boolean checkConditions(String [] conditions) throws XPathExpressionException {
 		String value;  boolean flag=false; 
 		try {
@@ -413,7 +432,8 @@ public class ProductsRest {
 			}
 
 			for(int i=0; i<conditions.length; i++) {
-				for(int j=0; j<nameC.length; j++) {
+				flag=false;
+				for(int j=0; j<amountVar; j++) {
 					if(conditions[i].contentEquals(nameC[j])) {
 						flag=true;
 						break;
@@ -437,6 +457,7 @@ public class ProductsRest {
 		int amountVar=1; 
 		int amountIns=0; 
 		int auxamountIns=0; 
+		int z=0; 
 		int counter=1; int pos=0; 
 		for(int i=0; i<command.length(); i++) {
 			if(counter==1 && command.charAt(i)==' ') {
@@ -454,10 +475,10 @@ public class ProductsRest {
 					x++;
 					if(x==command.length()) break;
 				}
-				variables= new String [amountVar]; 
+				variables= new String [amountVar]; i--; 
 			}
-			else if((counter==3 && command.charAt(i)==',')) {
-				int x=i; int j=0;
+			else if((counter==3 && (command.charAt(i)=='(' ))) {
+				int x=i; int j=0; 
 				while(command.charAt(x)!=')' && x!=command.length()) {
 					if(command.charAt(x)==',') {
 						variables[j]=command.substring(pos, x); j++;
@@ -494,17 +515,18 @@ public class ProductsRest {
 				int x=i; int value=0;
 				while(command.charAt(x)!=')' && x!=command.length()) {
 					if(command.charAt(x)==',') {
-						values[auxamountIns][value]=command.substring(pos, x); 
+						values[z][value]=command.substring(pos, x); 
 						pos=x+1;
 						value++; 
 					}
 					x++;
 				}
 				if(x<command.length()) {
-					values[auxamountIns][value]=command.substring(pos, x); 
+					values[z][value]=command.substring(pos, x); 
 					pos=x+2;
 				}
 				i=x-1;
+				z++;
 			}
 
 
@@ -520,6 +542,7 @@ public class ProductsRest {
 								auxResult[x][i]=values[x][j];
 								x++;
 							}
+							x=0;
 						}
 					}
 				}
@@ -530,41 +553,264 @@ public class ProductsRest {
 			e.printStackTrace();
 		}
 	}
+
 	public void createNewNode(int amountIns, int amountVar, String values[][]) {
 		try {
-		    File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
-		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		    DocumentBuilder builder = factory.newDocumentBuilder();
-		    Document document = builder.parse(xmlFile);
-		    for(int i=0; i<amountIns; i++) {
-		    	 Element estudianteElement = document.createElement("estudiante");
-		    	 for(int j=0; j<amountVar; j++) {
-		    		Element nombreElement = document.createElement(nameC[j]);
-		    		if(values[i][j]!=null)
-		    			nombreElement.setTextContent(values[i][j]);
-		    		else
-		    			nombreElement.setTextContent(" ");
-		  		    estudianteElement.appendChild(nombreElement);
-		    	 }
-		    	 Element rootElement = document.getDocumentElement();
-		    	 rootElement.appendChild(estudianteElement);
-		    }
+			File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.parse(xmlFile);
+			for(int i=0; i<amountIns; i++) {
+				Element estudianteElement = document.createElement("estudiante");
+				for(int j=0; j<amountVar; j++) {
+					Element nombreElement = document.createElement(nameC[j]);
+					if(values[i][j]!=null)
+						nombreElement.setTextContent(values[i][j]);
+					else
+						nombreElement.setTextContent(" ");
+					estudianteElement.appendChild(nombreElement);
+				}
+				Element rootElement = document.getDocumentElement();
+				rootElement.appendChild(estudianteElement);
+			}
 
-		    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		    Transformer transformer = transformerFactory.newTransformer();
-		    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		    DOMSource source = new DOMSource(document);
-		    StreamResult result = new StreamResult(xmlFile);
-		    transformer.transform(source, result);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			DOMSource source = new DOMSource(document);
+			StreamResult result = new StreamResult(xmlFile);
+			transformer.transform(source, result);
 
-		    System.out.println("Nuevo nodo 'estudiante' agregado al archivo XML.");
+			System.out.println("Nuevo nodo 'estudiante' agregado al archivo XML.");
 
 		} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 
 	}
 
+	public void delete(String command) {
+		int counter=0; 
+		String tableName=""; int pos=0; 
+		String varCondition1="";  String result1="";
+		String varCondition2="";  String result2="";
+		String varCondition3="";  String result3=""; int amountCondition=0; 
+		String [] operation = new String [3]; 
+
+		for(int i=0; i<command.length(); i++) {
+			if(command.charAt(i)==' ' || i==command.length()-1) {
+				if(i==command.length()-1) i++;
+				if(counter==0) {
+					tableName=command.substring(pos,i); 
+					pos=i+1; counter++;
+				}
+				else if(counter==1) {
+					if(command.substring(pos,i).contentEquals("where")) {
+						counter++; 
+						pos=i+1;
+					}
+					else 
+						break; 
+				}
+				else if(counter==3) {
+					result1=command.substring(pos,i); 
+					pos=i+1; 
+					counter++;
+					amountCondition++; 
+				}
+				else if (counter==4 || counter==7) {
+					if(command.substring(pos, i).contentEquals("or") || command.substring(pos, i).contentEquals("and") ) {
+						operation[amountCondition-1]=command.substring(pos, i);
+						counter++; 
+						pos=i+1; 
+					}
+					else
+						break;
+				}
+				else if(counter==6) {
+					result2=command.substring(pos,i); 
+					pos=i+1; 
+					counter++;
+					amountCondition++; 
+				}
+				else if(counter==9) {
+					result2=command.substring(pos,i); 
+					pos=i+1; 
+					counter++;
+					amountCondition++; 
+				}
+
+
+			}
+			else if(command.charAt(i)=='=') {
+				if(counter==2) {
+					varCondition1=command.substring(pos,i); 
+					counter++;
+					pos=i+1;
+				}
+				else if(counter==5) {
+					varCondition2=command.substring(pos,i); 
+					pos=i+1;
+					counter++; 
+				}
+				else if(counter==8) {
+					varCondition3=command.substring(pos,i); 
+					pos=i+1;
+					counter++; 
+				}
+
+			}
+		}
+		String [] conditions = new String[amountCondition]; 
+		String [] results = new String[amountCondition]; 
+
+		if(amountCondition==3) {
+			conditions[0]=varCondition1;
+			conditions[1]=varCondition2;
+			conditions[2]=varCondition3;
+
+			results[0]=result1;
+			results[1]=result2;
+			results[2]=result3;}
+		if(amountCondition==2) {
+			conditions[0]=varCondition1;
+			conditions[1]=varCondition2;
+			results[0]=result1;
+			results[1]=result2;}
+		conditions[0]=varCondition1;
+		results[0]=result1;
+		try {
+			if(checkConditions(conditions)) {
+				int amountVar=0; 
+				while(nameC[amountVar]!=null)
+					amountVar++;
+
+				File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
+				System.out.print((getClass().getResource("studentss.xml").getFile()));
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				Document document = builder.parse(xmlFile);
+
+				// Modificar el archivo XML según las condiciones
+				Element rootElement = document.getDocumentElement();
+				int x=amountCondition;
+				boolean flag1=false; boolean flag2=false; boolean flag3=false;
+
+				NodeList elementList = rootElement.getElementsByTagName("estudiante");
+
+				for (int i = 0; i < elementList.getLength(); i++) {
+					Element element = (Element) elementList.item(i);
+					Node studentNode = elementList.item(i);
+					if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element studentElement = (Element) studentNode;
+						String[] results1 = new String [amountVar];
+						for(int k=0; k<amountVar; k++) {
+							results1[k]= (String) studentElement.getElementsByTagName(nameC[k]).item(0).getTextContent();
+						}
+						if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
+							studentElement.getParentNode().removeChild(studentElement);
+						}
+					}
+				}
+
+				// Guardar los cambios en el archivo XML
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				DOMSource source = new DOMSource(document);
+				StreamResult result = new StreamResult(xmlFile);
+				transformer.transform(source, result);
+				System.out.println("Archivo XML modificado y guardado: " + xmlFile.getAbsolutePath());
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+
+	}
+
+	public void create(String command, String tableName) {
+
+		int x=0; int j=0; 
+		int amountVar=1; String [] variables; int pos=0; 
+		if(command.charAt(x)=='(') {
+			while(command.charAt(x)!=')' ) {
+				if(command.charAt(x)==',')
+					amountVar++; 
+				x++;
+			}
+			variables= new String [amountVar]; x=0; pos++;
+			while(command.charAt(x)!=')' && x!=command.length()) {
+				if(command.charAt(x)==',') {
+					variables[j]=command.substring(pos, x); j++;
+					pos=x+1;
+				}
+				x++;
+			}
+			if(x<command.length()) {
+				variables[j]=command.substring(pos, x); 
+			}
+			
+			try {
+	            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	            DocumentBuilder builder = factory.newDocumentBuilder();
+	            Document document = builder.newDocument();
+	            
+	            Element rootElement = document.createElement(tableName);
+	            document.appendChild(rootElement);
+	            
+	            // Crear elementos y agregarlos al elemento raíz
+	            Element estudianteElement = document.createElement(tableName);
+	            rootElement.appendChild(estudianteElement);
+	            
+	            for(int i=0; i<amountVar; i++) {
+	            	Element element = document.createElement(variables[i]);
+	   	            element.appendChild(document.createTextNode(variables[i]));
+	   	            estudianteElement.appendChild(element);
+	            }
+	         
+	 
+	            // Guardar el contenido del documento XML en un archivo
+	            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	            Transformer transformer = transformerFactory.newTransformer();
+	            DOMSource source = new DOMSource(document);
+	
+	            String path=(getClass().getResource("students.xml").getFile());
+	            path=path.substring(0, path.length()-13)+"/"+tableName+".xml";
+	            System.out.println(path);
+	            StreamResult result = new StreamResult(new File(path));
+	            transformer.transform(source, result);
+	            
+	            System.out.println("Archivo XML creado correctamente.");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+		
+		}
+	}
+
+	public void deleteTable(String tableName) {
+		 String path=(getClass().getResource("students.xml").getFile());
+         path=path.substring(0, path.length()-13)+"/"+tableName+".xml";
+         
+         File file = new File(path);
+
+         // Verificar si el archivo existe antes de borrarlo
+         if (file.exists()) {
+             // Intentar borrar el archivo
+             if (file.delete()) {
+                 System.out.println("El archivo se ha borrado exitosamente.");
+             } else {
+                 System.out.println("No se pudo borrar el archivo.");
+             }
+         } else {
+             System.out.println("El archivo no existe en la ruta especificada.");
+         }
+	}
+	
 }
+
 
 
