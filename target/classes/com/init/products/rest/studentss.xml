@@ -80,6 +80,28 @@
     
     
     </estudiante>
+      <estudiante>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        
+        
+        
+        <nombre>Isaac</nombre>
+                                
+        
+        
+        
+        <apellido>Solis</apellido>
+                         
+        
+        
+        
+        
+        <carnet>67890</carnet>
+                                                                                                                                                                                                                                                                                                                                                                                                                    
+    
+    
+    
+    </estudiante>
               
 
     
@@ -100,7 +122,6 @@
             
     
     <estudiante>
-                        
         
         <nombre> </nombre>
                         
