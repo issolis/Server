@@ -1206,7 +1206,7 @@ public class ProductsRest {
 		try {
 
 			path=tableName;
-			String auxPath=path; String path=tableName2+".xml";
+			String auxPath=path; String path=tableName2;
 			boolean permission1=false;
 			if(amountCondition1==0 ) {
 				permission1=true;
@@ -1219,6 +1219,7 @@ public class ProductsRest {
 				permission2=true;
 			}
 			else {
+				path=tableName2;
 				permission2=checkConditions(conditions2);
 			}
 			if(permission1 && permission2) {
