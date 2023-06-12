@@ -4,6 +4,7 @@ public class linkedList {
 	node head= null;
 	int length=0; 
 	
+	
 	void insert(String data) {
 		node newNode = new node();
 		newNode.data=data; 

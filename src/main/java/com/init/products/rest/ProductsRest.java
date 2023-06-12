@@ -8,41 +8,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.init.products.entity.Product;
+
 import com.init.products.response.response;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+
 
 @RestController
 @RequestMapping("/")
 @CrossOrigin(origins = "http://localhost:4200")
 
 public class ProductsRest {
-	String [] nameC = null ; int amountGlobalVar=0; 	response [] res;
+	String [] nameC = null ; int amountGlobalVar=0; 	response [] res; String path="studentss.xml";
 
-
+	linkedList convergenceList = new linkedList(); 
 	@PostMapping("/endpoint")
 	public ResponseEntity<response[]> procesarDato(@RequestBody String dato) {
+		String valor = dato;
+		valor=valor.substring(9, valor.length()-2);
+		processingInformation(valor); 
+
+		return ResponseEntity.ok(res);
+	}
+	@PostMapping("/validacion")
+	public ResponseEntity<response[]> Arturo(@RequestBody String dato) {
 		String valor = dato;
 		valor=valor.substring(9, valor.length()-2);
 		processingInformation(valor); 
@@ -99,14 +103,24 @@ public class ProductsRest {
 				}
 				i=x-1;
 				try {
-					if(checkConditions(variables) && message.charAt(x)==')')
+					String aux=message.substring(x+2); int y=0;
+					while(aux.charAt(y)!=' ' && y!=aux.length()  ) {
+						y++; 
+					}
+					int z=y+1; y++;
+					while(aux.charAt(y)!=' ' && y!=aux.length()  ) {
+						y++;  
+					}
+					path=aux.substring(z,y); 
+					if(checkConditions(variables) && message.charAt(x)==')') {
 						amountGlobalVar=0;
-					Select(message.substring(x+2), variables);
+						Select(message.substring(x+2), variables);}
 				} catch (XPathExpressionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
+
 		}
 
 		else if(command.contentEquals("Drop")) {
@@ -138,78 +152,8 @@ public class ProductsRest {
 			res=new response[1];
 			res[0]= new response(); 
 		}
-		amountGlobalVar=0; 
+		amountGlobalVar=0; convergenceList.head=null;  
 	}
-
-	/*public void Select(String command) {
-		String [] operation = new String [3]; 
-		String tableName= " "; int counter=0; int pos=0; 
-		String tableName1= " ";
-		String columnName = " ";
-		String var=""; String result= "";
-		String varCondition1="";  String result1="";
-		String varCondition2="";  String result2="";
-		String varCondition3="";  String result3=""; int amountCondition=0; 
-		System.out.println(varCondition1);
-		System.out.println(command.length());
-		for(int i=0; i<command.length() ; i++ ) {
-			if(command.charAt(i)==' ' || i==command.length()-1 ) {
-				if(i==command.length()-1 ) i++; 
-				if(counter==0) { //nombre de la columna
-					columnName=command.substring(0,i);
-					pos=i+1;
-					counter++;
-				}
-				else if(counter==1) {
-					if(command.substring(pos, i).contentEquals("from")) {
-						counter++; 
-						pos=i+1; 
-					}
-					else
-						break;
-				}
-				else if(counter==2) { //nombre de la tabla
-					tableName=command.substring(pos, i);
-					pos=i+1;
-					counter++;
-				}
-				else if(counter==3) {
-					if(command.substring(pos, i).contentEquals("innerjoin")) {
-						counter++; 
-						pos=i+1; 
-					}
-					else
-						break;
-				}
-				else if(counter==4) { //nombre de la tabla que hace interseccion
-					tableName1=command.substring(pos, i);
-					pos=i+1;
-					counter++;
-				}
-				else if(counter==5) {
-					if(command.substring(pos, i).contentEquals("on")) {
-						counter++; 
-						pos=i+1; 
-					}
-					else
-						break;
-				}
-			}
-			else if (command.charAt(i)=='=') {
-				if(counter==6) {
-					var=command.substring(pos, i); 
-					result=command.substring(i+1);
-					pos=i+1;
-					counter++;
-				}
-			}
-		}
-		System.out.println(var); 
-		System.out.println(result); 
-
-		for(int j=0; j<7; j++); 
-
-	}*/
 
 	public void Update(String command) {
 		String [] operation = new String [3]; 
@@ -324,14 +268,15 @@ public class ProductsRest {
 
 
 		try {
+			path=tableName; 
 			if(checkConditions(conditions)) {
 
 				int amountVar=0; 
 				while(nameC[amountVar]!=null)
 					amountVar++;
 
-				File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
-				System.out.print((getClass().getResource("studentss.xml").getFile()));
+				File xmlFile = new File(getClass().getResource(tableName+".xml").getFile());
+				System.out.print((getClass().getResource(tableName+".xml").getFile()));
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				Document document = builder.parse(xmlFile);
@@ -341,7 +286,7 @@ public class ProductsRest {
 				int x=amountCondition;
 				boolean flag1=false; boolean flag2=false; boolean flag3=false;
 
-				NodeList elementList = rootElement.getElementsByTagName("estudiante");
+				NodeList elementList = rootElement.getElementsByTagName(tableName);
 
 				for (int i = 0; i < elementList.getLength(); i++) {
 					Element element = (Element) elementList.item(i);
@@ -436,12 +381,12 @@ public class ProductsRest {
 	}
 
 	public boolean checkConditions(String [] conditions) throws XPathExpressionException {
-		String value;  boolean flag=false; 
+		boolean flag=false; 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 
-			File file = new File(getClass().getResource("studentss.xml").getFile());
+			File file = new File(getClass().getResource(path+".xml").getFile());
 			Document document = builder.parse(file);
 			Node estudianteNode = document.getDocumentElement();
 			Element estudianteElement = (Element) estudianteNode;
@@ -569,6 +514,7 @@ public class ProductsRest {
 
 		}
 		try {
+			path=tableName;
 			if(checkConditions(variables)) {
 				String[][] auxResult = new String [amountIns][amountGlobalVar]; int x=0;
 
@@ -589,16 +535,17 @@ public class ProductsRest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		amountGlobalVar=0; 
 	}
 
 	public void createNewNode(int amountIns, int amountVar, String values[][]) {
 		try {
-			File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
+			File xmlFile = new File(getClass().getResource(path+".xml").getFile());
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(xmlFile);
 			for(int i=0; i<amountIns; i++) {
-				Element estudianteElement = document.createElement("estudiante");
+				Element estudianteElement = document.createElement(path);
 				for(int j=0; j<amountVar; j++) {
 					Element nombreElement = document.createElement(nameC[j]);
 					if(values[i][j]!=null)
@@ -717,13 +664,14 @@ public class ProductsRest {
 		conditions[0]=varCondition1;
 		results[0]=result1;
 		try {
+			path=tableName;
 			if(checkConditions(conditions)) {
 				int amountVar=0; 
 				while(nameC[amountVar]!=null)
 					amountVar++;
 
-				File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
-				System.out.print((getClass().getResource("studentss.xml").getFile()));
+				File xmlFile = new File(getClass().getResource(tableName+".xml").getFile());
+				System.out.print((getClass().getResource(tableName+".xml").getFile()));
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				Document document = builder.parse(xmlFile);
@@ -879,7 +827,7 @@ public class ProductsRest {
 						while(command.charAt(x)!=' ')		
 							x++;
 						if(command.substring(pos, x).contentEquals("join")) {
-
+							inner(command.substring(x+1), tableName, variables); 
 						}
 
 						break;
@@ -934,80 +882,94 @@ public class ProductsRest {
 
 
 		}
-		String [] conditions = new String[amountCondition]; 
-		String [] results = new String[amountCondition]; 
-		if(amountCondition==3) {
+		if(counter!=2) {
+			String [] conditions = new String[amountCondition]; 
+			String [] results = new String[amountCondition]; 
+			if(amountCondition==3) {
+				conditions[0]=varCondition1;
+				conditions[1]=varCondition2;
+				conditions[2]=varCondition3;
+
+				results[0]=result1;
+				results[1]=result2;
+				results[2]=result3;}
+			if(amountCondition==2) {
+				conditions[0]=varCondition1;
+				conditions[1]=varCondition2;
+				results[0]=result1;
+				results[1]=result2;}
 			conditions[0]=varCondition1;
-			conditions[1]=varCondition2;
-			conditions[2]=varCondition3;
-
 			results[0]=result1;
-			results[1]=result2;
-			results[2]=result3;}
-		if(amountCondition==2) {
-			conditions[0]=varCondition1;
-			conditions[1]=varCondition2;
-			results[0]=result1;
-			results[1]=result2;}
-		conditions[0]=varCondition1;
-		results[0]=result1;
-		try {
-			if(checkConditions(conditions)) {
-				int amountVar=0; 
-				while(nameC[amountVar]!=null)
-					amountVar++;
+			try {
+				path=tableName;
+				if(checkConditions(conditions)) {
+					int amountVar=0; 
+					while(nameC[amountVar]!=null)
+						amountVar++;
 
-				File xmlFile = new File(getClass().getResource("studentss.xml").getFile());
-				System.out.print((getClass().getResource("studentss.xml").getFile()));
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document document = builder.parse(xmlFile);
+					File xmlFile = new File(getClass().getResource(tableName+".xml").getFile());
+					System.out.print((getClass().getResource(tableName+".xml").getFile()));
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					Document document = builder.parse(xmlFile);
 
-				// Modificar el archivo XML según las condiciones
-				Element rootElement = document.getDocumentElement();
-				int x=amountCondition;
-				boolean flag1=false; boolean flag2=false; boolean flag3=false;
+					// Modificar el archivo XML según las condiciones
+					Element rootElement = document.getDocumentElement();
+					int x=amountCondition;
+					boolean flag1=false; boolean flag2=false; boolean flag3=false;
 
-				NodeList elementList = rootElement.getElementsByTagName("estudiante");
+					NodeList elementList = rootElement.getElementsByTagName(tableName);
 
-				linkedList list = new linkedList(); 
-				for (int i = 0; i < elementList.getLength(); i++) {
-					Element element = (Element) elementList.item(i);
-					Node studentNode = elementList.item(i);
-					if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
-						Element studentElement = (Element) studentNode;
-						String response=" ";
-						String[] results1 = new String [amountVar];
-						for(int k=0; k<amountVar; k++) {
-							results1[k]= (String) studentElement.getElementsByTagName(nameC[k]).item(0).getTextContent();
-						}
-						if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
-							for(int k=0; k<variables.length; k++) {
-								response=response + " " + (String) studentElement.getElementsByTagName(variables[k]).item(0).getTextContent();
+					linkedList list = new linkedList(); 
+					for (int i = 0; i < elementList.getLength(); i++) {
+						Element element = (Element) elementList.item(i);
+						Node studentNode = elementList.item(i);
+						if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element studentElement = (Element) studentNode;
+							String response=" ";
+							String[] results1 = new String [amountVar];
+							for(int k=0; k<amountVar; k++) {
+								results1[k]= (String) studentElement.getElementsByTagName(nameC[k]).item(0).getTextContent();
 							}
-							list.insert(response);
+							if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
+								for(int k=0; k<variables.length; k++) {
+									response=response + " " + (String) studentElement.getElementsByTagName(variables[k]).item(0).getTextContent();
+								}
+								list.insert(response);
+							}
 						}
 					}
+					node aux= list.head; 
+					res = new response[list.length]; int reP=0;
+					while(aux!=null) {
+						res[reP]= new response(); 
+						res[reP].resp=aux.data; 
+						reP++;
+						aux=aux.next; 
+					}
 				}
-				node aux= list.head; 
-				res = new response[list.length]; int reP=0;
-				while(aux!=null) {
-					res[reP]= new response(); 
-					res[reP].resp=aux.data; 
-					reP++;
-					aux=aux.next; 
-				}
-			}
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
 	}
-	public void inner(String command, String tableName) {
+
+	public void inner(String command, String tableName, String variables[]) {
 		int counter=0; int pos=0; 
 		String tableName2=" ";
-		
+		String conditionTable1=""; String conditionTable2=""; 
+		String varTable1=""; String varTable2=""; 
+		int amountCondition1=0;int amountCondition2=0; int amountOperations = 0; 
+
+		String[] operation = new String [2]; int cond=0; 
+		String[] operation1 = new String [3]; int z=0; 
+
+		linkedList listVarT1= new linkedList(); linkedList listVarT2= new linkedList();
+		linkedList listResT1= new linkedList(); linkedList listResT2= new linkedList();
+		operation1[0]="-1";operation1[1]="-1";operation1[2]="-1";
+
 		for(int i=0; i<command.length(); i++) {
 			if(command.charAt(i)==' ') {
 				if(counter==0) {
@@ -1023,21 +985,421 @@ public class ProductsRest {
 					else
 						break; 
 				}
+				else if(counter==3 ) {
+					System.out.print(command.substring(pos, i));
+					if(command.substring(pos, i).contentEquals("where")) {
+						counter++; 
+						pos=i+1; 
+					}
+					else 
+						break; 
+
+				}
+				else if(counter==5  || counter==7) {
+					if(command.substring(pos, i).contentEquals("and") || command.substring(pos, i).contentEquals("or")) {
+						operation[cond]=command.substring(pos, i);
+						cond++; 
+						pos=i+1;
+						counter++; 
+						amountOperations++; 
+					}else
+						break; 
+				}
 			}
 			else if(command.charAt(i)=='=') {
-				int x=pos; int condition=1;
-				while(command.charAt(x)!=' ') {
-					if(command.charAt(x)=='.') {
-						if(command.substring(pos, x).contentEquals(tableName2)) {
-							
+				if(counter==2) {
+					int x=pos; int condition=1; boolean flag=false;
+					while(command.length()!=x && command.charAt(x)!=' ') {
+						if(command.charAt(x)=='.') {
+							if(command.substring(pos, x).contentEquals(tableName2)) {
+								flag=false;
+							}
+							else if(command.substring(pos, x).contentEquals(tableName)) { 
+								flag=true;
+							}
+							pos=x+1;
 						}
-						else if(command.substring(pos, x).contentEquals(tableName)) {
-							
+						else if(command.charAt(x)=='=') {
+							if(flag) {
+								varTable1=command.substring(pos, x);  
+								pos=x+1; 
+							}
+							else {
+								varTable2=command.substring(pos, x); 
+								pos=x+1; 
+							}
+
 						}
+						x++;
 					}
+					if(flag) {
+						varTable1=command.substring(pos, x); 
+						pos=x+1; 
+					}
+					else {
+						varTable2=command.substring(pos, x); 
+						pos=x+1; 
+					}
+					pos=x+1;
+					i=x; 
+					counter++;
+
+				}
+				else if(counter==4) {
+					int x=pos; boolean flag=false; 
+					while(command.length()!=x && command.charAt(x)!=' ' ) {
+						if(command.charAt(x)=='.') {
+							if(command.substring(pos, x).contentEquals(tableName2)) {
+								flag=false;
+							}
+							else if(command.substring(pos, x).contentEquals(tableName)) {
+								flag=true;
+							}
+							pos=x+1;
+						}
+						else if(command.charAt(x)=='=') {
+							if(flag) {
+								listVarT1.insert(command.substring(pos, x));
+								pos=x+1; 
+
+							}
+							else {
+								listVarT2.insert(command.substring(pos, x));
+								pos=x+1; 
+							}
+						}
+						x++;
+					}
+					if(!flag) {	
+						listResT2.insert(command.substring(pos, x));
+						pos=x+1; 
+						amountCondition2++;
+						operation1[z]="0";
+						z++;
+					}
+					else {
+						System.out.println(command.substring(pos, x));
+						listResT1.insert(command.substring(pos, x));
+						pos=x+1; 
+						amountCondition1++;
+						operation1[z]="1";
+						z++;
+					}
+					pos=x+1;
+					i=x; 
+					counter++;
+				}
+				else if(counter==6) {
+					int x=pos; boolean flag=false; 
+					while(command.length()!=x && command.charAt(x)!=' ') {
+						if(command.charAt(x)=='.') {
+							if(command.substring(pos, x).contentEquals(tableName2)) {
+								flag=false;
+							}
+							else if(command.substring(pos, x).contentEquals(tableName)) {
+								flag=true;
+							}
+							pos=x+1;
+						}
+						else if(command.charAt(x)=='=') {
+							if(flag) {
+								listVarT1.insert(command.substring(pos, x));
+								pos=x+1; 
+							}
+							else {
+								listVarT2.insert(command.substring(pos, x));
+								pos=x+1; 
+							}
+						}
+						x++;
+					}
+					if(!flag) {
+						listResT2.insert(command.substring(pos, x));
+						pos=x+1;
+						amountCondition2++;
+						operation1[z]="0";
+						z++;
+					}
+					else {
+						listResT1.insert(command.substring(pos, x));
+						pos=x+1; 
+						amountCondition1++;
+						operation1[z]="1";
+						z++;
+					}
+					pos=x+1;
+					i=x; 
+					counter++;
+				}
+				else if(counter==8) {
+					int x=pos; boolean flag=false; 
+					while(command.length()!=x && command.charAt(x)!=' ') {
+						if(command.charAt(x)=='.') {
+							if(command.substring(pos, x).contentEquals(tableName2)) {
+								flag=false;
+							}
+							else if(command.substring(pos, x).contentEquals(tableName)) {
+								flag=true;
+							}
+							pos=x+1;
+						}
+						else if(command.charAt(x)=='=') {
+							if(flag) {
+
+								listVarT1.insert(command.substring(pos, x));
+								pos=x+1; 
+							}
+							else {
+
+								listVarT2.insert(command.substring(pos, x));
+								pos=x+1; 
+							}
+						}
+						x++;
+					}
+					if(!flag) {
+
+						listResT2.insert(command.substring(pos, x));
+						pos=x+1;
+						amountCondition2++;
+						operation1[z]="0";
+
+					}
+					else {
+						listResT1.insert(command.substring(pos, x));
+						pos=x+1; 
+						amountCondition1++;
+						operation1[z]="1";
+					}
+					pos=x+1;
+					i=x; 
+					counter++;
 				}
 			}
 		}
+		String [] conditions1 = new String[amountCondition1]; 
+		String [] results1 = new String[amountCondition1]; 
+		String [] conditions2 = new String[amountCondition2]; 
+		String [] results2 = new String[amountCondition2]; 
+
+		node auxVT1 = listVarT1.head;
+		node auxRT1 = listResT1.head;
+		node auxVT2 = listVarT2.head;
+		node auxRT2 = listResT2.head;
+		int x=0;
+		while(auxVT1!=null) {
+			conditions1[x]=auxVT1.data;
+			results1[x]=auxRT1.data;
+			x++;
+			auxVT1=auxVT1.next;
+			auxRT1=auxRT1.next;
+		}x=0;
+		while(auxVT2!=null) {
+			conditions2[x]=auxVT2.data;
+			results2[x]=auxRT2.data;
+			x++;
+			auxVT2=auxVT2.next;
+			auxRT2=auxRT2.next;
+		}
+
+
+		try {
+
+			path=tableName;
+			String auxPath=path; String path=tableName2+".xml";
+			boolean permission1=false;
+			if(amountCondition1==0 ) {
+				permission1=true;
+			}
+			else {
+				permission1=checkConditions(conditions1);
+			}
+			boolean permission2=false;
+			if(amountCondition2==0 ) {
+				permission2=true;
+			}
+			else {
+				permission2=checkConditions(conditions2);
+			}
+			if(permission1 && permission2) {
+				amountGlobalVar=0; 
+				int amountVar=0; 
+				while(nameC[amountVar]!=null)
+					amountVar++;
+
+				try {
+					File xmlFile = new File(getClass().getResource(auxPath+".xml").getFile());
+					System.out.print((getClass().getResource(auxPath+".xml").getFile()));
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					Document document = builder.parse(xmlFile);
+
+					// Modificar el archivo XML según las condiciones
+					Element rootElement = document.getDocumentElement();
+					NodeList elementList = rootElement.getElementsByTagName(tableName);
+
+					linkedList list = new linkedList(); 
+					for (int i = 0; i < elementList.getLength(); i++) {
+						Element element = (Element) elementList.item(i);
+						Node studentNode = elementList.item(i);
+						if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element studentElement = (Element) studentNode;
+							checkElements(studentElement, varTable1, varTable2, path, conditions1, conditions2, results1, results2, operation, operation1, variables, amountOperations);
+						}
+					}
+					node aux=convergenceList.head;
+					res = new response [convergenceList.length]; int g=0; 
+					while(aux!=null) {
+						res[g]=new response();
+						res[g].resp=aux.data;
+						g++;
+						aux=aux.next;
+					}
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
+	public void checkElements(Element element1, String condition1, String condition2, String path, String [] conditions1, String conditions2[],
+			String[] results1, String[] results2, String []operation, String[] operation1, String variables[], int amountOperations) {
+		try {
+			File xmlFile = new File(getClass().getResource(path+".xml").getFile());
+			System.out.print((getClass().getResource(path+".xml").getFile()));
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.parse(xmlFile);
+
+			// Modificar el archivo XML según las condiciones
+			Element rootElement = document.getDocumentElement();
+
+
+			NodeList elementList = rootElement.getElementsByTagName(path);
+
+			linkedList list = new linkedList();  boolean added=false;
+			for (int i = 0; i < elementList.getLength(); i++) {
+				Element element = (Element) elementList.item(i);
+				Node studentNode = elementList.item(i);
+				if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element studentElement = (Element) studentNode;
+					String booleanOutput="";
+					String auxOperation[] = new String[amountOperations+1];
+					for(int r=0; r<(amountOperations+1 );r++)
+						auxOperation[r]="0"; 
+					String con=(String) studentElement.getElementsByTagName(condition2).item(0).getTextContent();
+					System.out.println(element1.getElementsByTagName(condition1).item(0).getTextContent());
+					System.out.println(studentElement.getElementsByTagName(condition2).item(0).getTextContent()); 
+
+					if(con.contentEquals(element1.getElementsByTagName(condition1).item(0).getTextContent()) ) {
+						for(int p=0; p<conditions1.length;p++) {
+							boolean flag=false;
+							System.out.println(""); 
+							System.out.println(element1.getElementsByTagName(conditions1[p]).item(0).getTextContent()); 
+							if(element1.getElementsByTagName(conditions1[p]).item(0).getTextContent().contentEquals(results1[p]))
+								flag=true;
+							for(int i1=0; i1<3;i1++) {
+								if(operation1[i1].contentEquals("1")) {
+									if(flag) {
+										auxOperation[i1]="1";
+										operation1[i1]="-1";
+									}
+								}
+							}
+						}
+						for(int p=0; p<conditions2.length;p++) {
+							boolean flag=false;
+							if(studentElement.getElementsByTagName(conditions2[p]).item(0).getTextContent().contentEquals(results2[p]))
+								flag=true;
+							for(int i1=0; i1<operation1.length;i1++) {
+								if(operation1[i1].contentEquals("0")) {
+									if(flag) {
+										auxOperation[i1]="1";
+										operation1[i1]="-1";
+									}
+								}
+							}
+
+						}
+						String boolMessage=""; 
+						for(int r=0; r<(amountOperations+1 );r++) {
+							boolMessage=boolMessage+auxOperation[r];  
+						}
+
+
+						if(checkBooleanMessage(amountOperations, operation, boolMessage, variables)) {
+							String message1=""; String message=""; 
+							for(int j=0; j<variables.length; j++) {
+								if(!added) {
+									message1=message1+element1.getElementsByTagName(variables[j]).item(0).getTextContent()+" ";
+								}
+								message=message+studentElement.getElementsByTagName(variables[j]).item(0).getTextContent()+" ";
+							}
+							if(!added)
+								convergenceList.insert(message1);
+							convergenceList.insert(message);
+
+							added=true;
+						}
+					}
+
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	public boolean checkBooleanMessage(int amountConditions, String conditions[], String boolMessage, String variables[]) {
+
+		if(amountConditions==0) {
+			return true;
+		}
+		else if(amountConditions==1) {
+			if(conditions[0].contentEquals("or")) {
+				if(!boolMessage.contentEquals("00"))
+					return true;
+			}
+			else {
+				if(boolMessage.contentEquals("11"))
+					return true;
+			}
+
+		}
+		else if(amountConditions==2) {
+			if(conditions[0].contentEquals("or") && conditions[1].contentEquals("and")) {
+				if(boolMessage.contentEquals("101") || boolMessage.contentEquals("011") || boolMessage.contentEquals("111"))
+					return true;
+			}
+			else if(conditions[0].contentEquals("or") && conditions[1].contentEquals("or")) {
+				if(!boolMessage.contentEquals("000"))
+					return true;
+			}
+			else if(conditions[0].contentEquals("and") && conditions[1].contentEquals("or")) {
+				if(boolMessage.contentEquals("110") || boolMessage.contentEquals("111"))
+					return true;
+			}
+			else if(conditions[0].contentEquals("and") && conditions[1].contentEquals("and")) {
+
+				return true;
+			}
+
+
+
+		}
+
+		return false;
+	}
 }
+

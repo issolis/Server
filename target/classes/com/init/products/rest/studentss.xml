@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <estudiantes>
-                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                          
     
       
     
@@ -28,84 +28,139 @@
     
     
     
+    
     <estudiante>
-                                
+                                        
+        
         
         
         
         <nombre>Isaac</nombre>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
         
         
         
         
-        <apellido>Isaac</apellido>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+        
+        <apellido>Smith</apellido>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        
         
         
         
         
         <carnet>12345</carnet>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    
     
     
     
     
     </estudiante>
-                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                          
+    
     
     
     
     
     <estudiante>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        
         
         
         
         <nombre>Isaac</nombre>
-                                
+                                        
+        
         
         
         
         <apellido>Isaac</apellido>
-                         
+                                 
+        
         
         
         
         
         <carnet>67890</carnet>
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                            
+    
     
     
     
     </estudiante>
-      <estudiante>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+          
+    <estudiante>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        
         
         
         
         <nombre>Isaac</nombre>
-                                
+                                        
+        
         
         
         
         <apellido>Solis</apellido>
-                         
+                                 
+        
         
         
         
         
         <carnet>67890</carnet>
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                            
+    
     
     
     
     </estudiante>
-              
+                  
 
     
     
+    
+    <estudiante>
+                                
+        
+        
+        <nombre> </nombre>
+                                
+        
+        
+        <apellido>1</apellido>
+                                
+        
+        
+        <carnet> </carnet>
+                            
+    
+    
+    </estudiante>
+                
+    
+    
+    <estudiante>
+                
+        
+        <nombre> </nombre>
+                                
+        
+        
+        <apellido>2</apellido>
+                                
+        
+        
+        <carnet> </carnet>
+                            
+    
+    
+    </estudiante>
+            
+    
+    
     <estudiante>
                         
         
@@ -122,6 +177,7 @@
             
     
     <estudiante>
+                        
         
         <nombre> </nombre>
                         
@@ -133,51 +189,56 @@
                     
     
     </estudiante>
-        
+            
     
     <estudiante>
-                
-        <nombre> </nombre>
-                
-        <apellido>1</apellido>
-                
-        <carnet> </carnet>
-            
-    </estudiante>
+                        
         
-    <estudiante>
-                
         <nombre> </nombre>
-                
-        <apellido>2</apellido>
-                
-        <carnet> </carnet>
-            
-    </estudiante>
+                        
         
-    <estudiante>
-                
-        <nombre> </nombre>
-                
         <apellido>3</apellido>
-                
+                        
+        
         <carnet> </carnet>
-            
+                    
+    
     </estudiante>
+        
     
     <estudiante>
+                
         <nombre>i</nombre>
+                
         <apellido>1</apellido>
+                
         <carnet> </carnet>
+            
     </estudiante>
+        
     <estudiante>
+                
         <nombre>m</nombre>
+                
         <apellido>2</apellido>
+                
         <carnet> </carnet>
+            
     </estudiante>
+        
     <estudiante>
+                
         <nombre>a</nombre>
+                
         <apellido>3</apellido>
+                
+        <carnet> </carnet>
+            
+    </estudiante>
+    
+    <estudiante>
+        <nombre> </nombre>
+        <apellido>Solis</apellido>
         <carnet> </carnet>
     </estudiante>
 </estudiantes>
