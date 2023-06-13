@@ -1,7 +1,12 @@
 package com.init.products.rest;
 import java.util.*;
 
-
+/**
+ * Implementacion de una clase que crea xml para guardar la informacion de las tablas de Huffman
+ * @author Arturo, Isaac, Monica
+ * @return void
+ *
+ */
 public class XML {
     Map<String, Character> huffmanTable = new HashMap<>();
     public String decoded_str;

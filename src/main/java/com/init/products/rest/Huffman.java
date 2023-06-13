@@ -2,6 +2,13 @@ package com.init.products.rest;
 import java.util.*;
 
 
+
+/**
+ * Implementacion del Huffman
+ * @author Isaac, Monica y Arturo
+ * @return void
+ *
+ */
 public class Huffman {
     Map<String, Character> huffmanTable = new HashMap<>();
     public String decoded_str;

@@ -33,6 +33,14 @@ import javax.xml.xpath.XPathExpressionException;
 @RequestMapping("/")
 @CrossOrigin(origins = "http://localhost:4200")
 
+
+
+/**
+ * Implementacion de la logica de la base de datos
+ * @author Isaac, Monica Arturo
+ * @return void
+ *
+ */
 public class ProductsRest {
 	String [] nameC = null ; int amountGlobalVar=0; 	response [] res; String path="studentss.xml";
 

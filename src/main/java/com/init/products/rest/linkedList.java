@@ -1,5 +1,12 @@
 package com.init.products.rest;
 
+
+
+/**
+ * Implementacion de una lista simplemente enlazada
+ * @author Arturo, Isaac, Monica
+ * @return void
+ */
 public class linkedList {
 	node head= null;
 	int length=0; 

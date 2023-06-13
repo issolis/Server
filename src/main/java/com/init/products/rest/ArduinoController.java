@@ -15,6 +15,12 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/messages")
 
+/**
+ * Codigo que permite el uso del arduino
+ * @author Isaac, Monica y Arturo
+ * @return null
+ *
+ */
 public class ArduinoController {
 
     boolean value = false;

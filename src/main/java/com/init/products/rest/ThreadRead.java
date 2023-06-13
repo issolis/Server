@@ -8,6 +8,12 @@ import java.util.Scanner;
 import com.fazecast.jSerialComm.SerialPort;
 
 
+/**
+ * Implementacion del hilo que permite tener una funcionalidad en arduino
+ * @author Isaac Monica Arturo
+ * @return void
+ *
+ */
 public class ThreadRead extends Thread{
     public static int success = 0;
     @Override
