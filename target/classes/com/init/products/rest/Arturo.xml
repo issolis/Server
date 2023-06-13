@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Arturo>
+    <Arturo>
+        <nombre>nombre</nombre>
+        <apellido>apellido</apellido>
+    </Arturo>
+    <Arturo>
+        <nombre>Roberto</nombre>
+        <apellido>Solis</apellido>
+    </Arturo>
+    <Arturo>
+        <nombre>Roberto</nombre>
+        <apellido>Solis</apellido>
+    </Arturo>
+</Arturo>

@@ -165,6 +165,7 @@ public class ProductsRest {
 		System.out.println(varCondition1);
 		System.out.println(command.length());
 		for(int i=0; i<command.length() ; i++ ) {
+			if(i==command.length()-1) i++;
 			if(command.charAt(i)==' ' || i==command.length()-1 ) {
 				if(i==command.length()-1 ) i++; 
 				if(counter==0) {
@@ -300,8 +301,7 @@ public class ProductsRest {
 						}
 						if(deniedAcces(amountCondition, results, results1, operation, conditions, amountVar)) {
 							for(int p=0; p<amountVar;p++) {
-								if(nameC[p].contentEquals(var)) {
-									System.out.print(results11[p].getTextContent()); 
+								if(nameC[p].contentEquals(var)) { 
 									studentElement.getElementsByTagName(nameC[p]).item(0).setTextContent(result);
 								}
 							}
@@ -345,33 +345,33 @@ public class ProductsRest {
 				return true;
 		}
 		else if(amountConditions==2) {
-			if(Condition[0].contentEquals("or")) {
+			if(operation[0].contentEquals("or")) {
 				if(auxResult1[0].contentEquals(auxResult[0]) ||auxResult1[1].contentEquals(auxResult[1]) ) {
 					return true;
 				}
 			}else {
-				if(auxResult1[0].contentEquals(auxResult[0]) || auxResult1[1].contentEquals(auxResult[1]) ) {
+				if(auxResult1[0].contentEquals(auxResult[0]) && auxResult1[1].contentEquals(auxResult[1]) ) {
 					return true;
 				}
 			}
 
 		}
 		else if(amountConditions==3) {
-			if(Condition[0].contentEquals("or") && Condition[1].contentEquals("or")) {
+			if(operation[0].contentEquals("or") && operation[1].contentEquals("or")) {
 				if(auxResult1[0].contentEquals(auxResult[0]) || auxResult1[1].contentEquals(auxResult[1]) || auxResult1[2].contentEquals(auxResult[2]) ) {
 					return true;
 				}
-			}else if(Condition[0].contentEquals("or") && Condition[1].contentEquals("and")){
+			}else if(operation[0].contentEquals("or") && operation[1].contentEquals("and")){
 				if((auxResult1[0].contentEquals(auxResult[0]) || auxResult1[1].contentEquals(auxResult[1])) && auxResult1[2].contentEquals(auxResult[2]) ) {
 					return true;
 				}
 			}
-			else if(Condition[0].contentEquals("and") && Condition[1].contentEquals("and")){
+			else if(operation[0].contentEquals("and") && operation[1].contentEquals("and")){
 				if((auxResult1[0].contentEquals(auxResult[0]) && auxResult1[1].contentEquals(auxResult[1])) && auxResult1[2].contentEquals(auxResult[2]) ) {
 					return true;
 				}
 			}
-			else if(Condition[0].contentEquals("and") && Condition[1].contentEquals("or")){
+			else if(operation[0].contentEquals("and") && operation[1].contentEquals("or")){
 				if((auxResult1[0].contentEquals(auxResult[0]) && auxResult1[1].contentEquals(auxResult[1])) || auxResult1[2].contentEquals(auxResult[2]) ) {
 					return true;
 				}
@@ -859,6 +859,7 @@ public class ProductsRest {
 				}
 				else if(counter==10) {
 					result3=command.substring(pos, i); 
+					amountCondition++; 
 				}
 			}
 			else if(command.charAt(i)=='=') {
@@ -1291,6 +1292,7 @@ public class ProductsRest {
 			for (int i = 0; i < elementList.getLength(); i++) {
 				Element element = (Element) elementList.item(i);
 				Node studentNode = elementList.item(i);
+				String[] operation2=operation1;
 				if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element studentElement = (Element) studentNode;
 					String booleanOutput="";
@@ -1309,10 +1311,10 @@ public class ProductsRest {
 							if(element1.getElementsByTagName(conditions1[p]).item(0).getTextContent().contentEquals(results1[p]))
 								flag=true;
 							for(int i1=0; i1<3;i1++) {
-								if(operation1[i1].contentEquals("1")) {
+								if(operation2[i1].contentEquals("1")) {
 									if(flag) {
 										auxOperation[i1]="1";
-										operation1[i1]="-1";
+										operation2[i1]="-1";
 									}
 								}
 							}
@@ -1322,10 +1324,10 @@ public class ProductsRest {
 							if(studentElement.getElementsByTagName(conditions2[p]).item(0).getTextContent().contentEquals(results2[p]))
 								flag=true;
 							for(int i1=0; i1<operation1.length;i1++) {
-								if(operation1[i1].contentEquals("0")) {
+								if(operation2[i1].contentEquals("0")) {
 									if(flag) {
 										auxOperation[i1]="1";
-										operation1[i1]="-1";
+										operation2[i1]="-1";
 									}
 								}
 							}
@@ -1337,7 +1339,7 @@ public class ProductsRest {
 						}
 
 
-						if(checkBooleanMessage(amountOperations, operation, boolMessage, variables)) {
+						if(checkBooleanMessage(amountOperations, auxOperation, boolMessage, variables)) {
 							String message1=""; String message=""; 
 							for(int j=0; j<variables.length; j++) {
 								if(!added) {
@@ -1365,6 +1367,7 @@ public class ProductsRest {
 	public boolean checkBooleanMessage(int amountConditions, String conditions[], String boolMessage, String variables[]) {
 
 		if(amountConditions==0) {
+			if(boolMessage.contentEquals("1"))
 			return true;
 		}
 		else if(amountConditions==1) {
